@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #f8f6f2;
+      --bg-off:    #f2efe9;
+      --text:      #1a1814;
+      --muted:     #8a8680;
+      --accent:    #c84b2f;
+      --accent2:   #1a1814;
+      --line:      rgba(26,24,20,0.12);
+      --line-warm: rgba(200,75,47,0.18);
+      --evo-text-width: 420px;
+      --f-display: 'Playfair Display', Georgia, serif;
+      --f-body:    'Space Grotesk', sans-serif;
+      --trans:     0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--f-body);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      cursor: default;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.6;
+    }
+
+    #progress-bar {
+      position: fixed; bottom: 0; left: 0;
+      height: 2px; width: 0%;
+      background: var(--accent);
+      z-index: 8000;
+      transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .slide {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: var(--bg);
+      z-index: 0;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--trans), visibility 0s linear var(--trans);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .slide.active {
+      z-index: 2;
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity var(--trans), visibility 0s linear 0s;
+    }
+    .slide.exit {
+      z-index: 1;
+      visibility: visible;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--trans), visibility 0s linear var(--trans);
+    }
+
+    .slide .anim {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+    .slide.active .anim { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.05s; }
+    .d2 { transition-delay: 0.15s; }
+    .d3 { transition-delay: 0.25s; }
+    .d4 { transition-delay: 0.35s; }
+    .d5 { transition-delay: 0.45s; }
+    .d6 { transition-delay: 0.55s; }
+    .d7 { transition-delay: 0.65s; }
+    .d8 { transition-delay: 0.75s; }
+    .d9 { transition-delay: 0.85s; }
+
+    #nav {
+      position: fixed; bottom: 2.4rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 1.6rem;
+      z-index: 7000;
+    }
+    .nav-btn {
+      background: none; border: 1px solid var(--line); cursor: pointer;
+      color: var(--muted);
+      font-family: var(--f-body);
+      font-size: 0.75rem; font-weight: 400; line-height: 1;
+      padding: 0.5rem 0.8rem;
+      border-radius: 2px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+    .nav-btn:hover { color: var(--bg); background: var(--text); border-color: var(--text); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
+    .nav-btn:disabled:hover { color: var(--muted); background: none; border-color: var(--line); }
+    #slide-counter {
+      font-family: var(--f-body);
+      font-size: 0.62rem; font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      min-width: 4rem; text-align: center;
+    }
+    #key-hint {
+      position: fixed; bottom: 2.6rem; right: 2.5rem;
+      font-size: 0.5rem; font-weight: 400;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--muted); opacity: 0.5;
+      z-index: 7000;
+    }
+
+    .slide-bg {
+      position: absolute; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+    .slide-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.07;
+      filter: saturate(0);
+    }
+
+    /* Hero */
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: flex-start;
+      max-width: 900px;
+      width: 90%;
+    }
+    .hero-rule {
+      width: 100%; height: 1px;
+      background: var(--line);
+      margin-bottom: 3rem;
+    }
+    .hero-eyebrow {
+      font-family: var(--f-body);
+      font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.6rem;
+    }
+    .hero-title {
+      font-family: var(--f-display);
+      font-size: clamp(4rem, 9vw, 10rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+    }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-subtitle {
+      font-family: var(--f-body);
+      font-size: clamp(0.78rem, 1.15vw, 0.95rem);
+      font-weight: 300;
+      color: #4a4843;
+      line-height: 1.75;
+      max-width: 520px;
+      text-align: left;
+      margin-bottom: 2.4rem;
+    }
+    .hero-footer {
+      display: flex; align-items: center; gap: 2rem;
+      border-top: 1px solid var(--line);
+      padding-top: 1.4rem;
+      width: 100%;
+    }
+    .hero-byline {
+      font-family: var(--f-body);
+      font-size: 0.6rem; font-weight: 400;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .hero-tag {
+      font-family: var(--f-body);
+      font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.25rem 0.7rem;
+      border-radius: 2px;
+    }
+
+    /* Trends (slide 2) */
+    .trends-inner {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 1000px;
+      text-align: left;
+      padding: 6vmin 8vw;
+    }
+    .trends-header { margin-bottom: 2.5rem; }
+    .trends-title {
+      font-family: var(--f-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 700; line-height: 1; color: var(--text);
+    }
+    .trend-row {
+      display: flex; align-items: baseline; gap: 2rem;
+      padding: 1.3rem 0;
+      border-bottom: 1px solid var(--line);
+      position: relative; overflow: hidden;
+    }
+    .trend-row:first-of-type { border-top: 1px solid var(--line); }
+    .trend-row::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .trend-row:hover::after { width: 100%; }
+    .trend-num {
+      font-family: var(--f-display); font-size: 0.8rem;
+      font-weight: 300; color: var(--accent);
+      letter-spacing: 0.1em; min-width: 2rem; opacity: 0.7;
+    }
+    .trend-name {
+      font-family: var(--f-display);
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: 300; color: var(--text);
+      letter-spacing: -0.01em;
+      transition: color 0.3s ease;
+    }
+    .trend-row:hover .trend-name { color: var(--accent); }
+
+    #slide-2 .trend-row {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+    #slide-2.active .trends-inner > .trend-row:nth-child(2) { transition-delay: 0.35s; }
+    #slide-2.active .trends-inner > .trend-row:nth-child(3) { transition-delay: 0.6s; }
+    #slide-2.active .trends-inner > .trend-row:nth-child(4) { transition-delay: 0.85s; }
+    #slide-2.active .trends-inner > .trend-row:nth-child(5) { transition-delay: 1.1s; }
+    #slide-2.active .trend-row {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Quote slides */
+    .quote-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 840px;
+      width: 90%;
+    }
+    .quote-mark {
+      font-family: var(--f-display);
+      font-size: clamp(4rem, 10vw, 8rem);
+      color: var(--accent); opacity: 0.25;
+      line-height: 0.65; display: block;
+      margin-bottom: 1rem; user-select: none;
+    }
+    .quote-text {
+      font-family: var(--f-display);
+      font-size: clamp(1.4rem, 2.8vw, 2.8rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .quote-text em {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .quote-attr {
+      font-family: var(--f-body);
+      font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 2.2rem;
+      display: block;
+    }
+    .quote-text-long {
+      font-size: clamp(0.95rem, 1.7vw, 1.35rem);
+      font-weight: 300;
+      line-height: 1.75;
+      max-width: 820px;
+    }
+
+    /* Evolution slides */
+    .evo-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 768px) {
+      .evo-wrap { grid-template-columns: 1fr; }
+    }
+    .evo-diagram-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4vmin 4vw 4vmin 6vw;
+      position: relative;
+    }
+    .evo-diagram-panel::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: min(10vh, 5rem);
+      bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
+      width: 1px;
+      background: var(--line);
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .evo-diagram-panel::after { display: none; }
+    }
+    .evo-diagram-panel img {
+      width: 100%;
+      max-width: min(34.56vw, 410px);
+      height: auto;
+      display: block;
+      image-rendering: auto;
+    }
+    .evo-text-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5vmin 6vw 5vmin 5vw;
+      text-align: left;
+      position: relative;
+    }
+    @media (max-width: 768px) {
+      .evo-text-panel { padding-top: calc(2rem + 5vmin); }
+      .evo-text-panel::before {
+        content: '';
+        position: absolute;
+        top: 5vmin;
+        left: 5vw;
+        width: min(calc(100% - 5vw - 6vw), var(--evo-text-width));
+        height: 1px;
+        background: var(--line);
+        pointer-events: none;
+      }
+    }
+    .evo-period {
+      font-family: var(--f-body);
+      font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+    .evo-heading {
+      font-family: var(--f-display);
+      font-size: clamp(2.8rem, 5vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+    .evo-heading em { font-style: italic; color: var(--accent); font-weight: 400; }
+    .evo-tagline {
+      font-family: var(--f-body);
+      font-size: clamp(0.7rem, 1vw, 0.8rem);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-left: 2px solid var(--accent);
+      padding-left: 0.8rem;
+      margin-bottom: 1.8rem;
+    }
+    .evo-divider {
+      width: min(100%, var(--evo-text-width));
+      height: 1px;
+      background: var(--line-warm);
+      margin-bottom: 1.4rem;
+    }
+    .evo-desc {
+      font-family: var(--f-body);
+      font-size: clamp(0.82rem, 1.15vw, 0.95rem);
+      font-weight: 300;
+      color: #4a4843;
+      line-height: 1.8;
+      max-width: var(--evo-text-width);
+    }
+
+    /* Centered statement */
+    .center-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+    .accent-line {
+      width: 3rem; height: 1px;
+      background: var(--accent); opacity: 0.45;
+      margin: 0 auto 2.5rem;
+    }
+    .statement {
+      font-family: var(--f-display);
+      font-size: clamp(3rem, 7vw, 7.5rem);
+      font-weight: 700; line-height: 1.05;
+      letter-spacing: -0.025em;
+    }
+    .statement em { font-style: italic; color: var(--accent); font-weight: 400; }
+    .attr {
+      font-size: 0.62rem; font-weight: 400;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--muted); margin-top: 1.8rem;
+      display: block;
+    }
+
+    /* Vibe coding examples */
+    .examples-slide {
+      overflow-y: auto;
+      padding: 4vmin 8vw 7vmin;
+      align-items: flex-start;
+      text-align: center;
+    }
+    .examples-inner {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 1120px;
+    }
+    .examples-headline {
+      font-family: var(--f-display);
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 700; line-height: 1.1;
+      margin-bottom: 5.7rem;
+    }
+    .examples-headline em { font-style: italic; color: var(--accent); font-weight: 400; }
+    .examples-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem 2.5rem;
+      text-align: left;
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 720px) {
+      .examples-columns { grid-template-columns: 1fr; max-width: 36rem; }
+    }
+    .examples-cat {
+      font-family: var(--f-display);
+      font-size: clamp(0.88rem, 1.25vw, 1.05rem);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin: 0 0 0.45rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .examples-ul {
+      list-style: none;
+      margin: 0 0 1rem;
+      padding: 0;
+    }
+    .examples-ul li {
+      font-size: clamp(0.68rem, 0.95vw, 0.82rem);
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.5;
+      padding: 0.18rem 0 0.18rem 1rem;
+      position: relative;
+    }
+    .examples-ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      opacity: 0.55;
+      font-size: 0.85em;
+    }
+
+    /* What is vibe coding — click reveal */
+    .sec-label {
+      font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--accent); display: block;
+      margin-bottom: 1.6rem; opacity: 0.85;
+    }
+    .section-headline {
+      font-family: var(--f-display);
+      font-size: clamp(2rem, 4.5vw, 4rem);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -0.015em;
+    }
+    .section-headline em { font-style: italic; color: var(--accent); font-weight: 400; }
+    .vibe-list { list-style: none; width: 100%; max-width: 660px; margin: 2rem auto 0; }
+    .vibe-item {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 1rem 0; border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+    .vibe-item:first-child { border-top: 1px solid var(--line); }
+    .vibe-arrow { color: var(--accent); font-size: 1rem; flex-shrink: 0; }
+    .vibe-text {
+      font-family: var(--f-display);
+      font-size: clamp(1.05rem, 2vw, 1.6rem);
+      font-weight: 300; color: var(--text);
+    }
+    .flow-hint {
+      font-size: 0.62rem; letter-spacing: 0.22em;
+      color: var(--accent); margin-top: 2rem;
+      text-transform: uppercase; display: block;
+    }
+    .flow-hint span { opacity: 0.35; margin: 0 0.6rem; }
+
+    #slide-12 .vibe-item,
+    #slide-12 .flow-hint {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+    #slide-12 .vibe-item.revealed,
+    #slide-12 .flow-hint.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+
+  <!-- SLIDE 1 — HERO -->
+  <section class="slide active" id="slide-1">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2560&auto=format&fit=crop"
+           alt="" aria-hidden="true" style="opacity:0.07;" />
+    </div>
+    <div class="hero-inner">
+      <div class="hero-rule anim d1"></div>
+      <h1 class="hero-title anim d2">Agentic <em>AI</em></h1>
+      <p class="hero-subtitle anim d3">Latest Trends, Autonomous Agents, and the Next Evolution of Intelligence</p>
+      <div class="hero-footer anim d4">
+        <span class="hero-tag">AI Brief</span>
+        <span class="hero-byline">Paul DelSignore</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 — TRENDS IN MOTION (future-proof-career slide 19) -->
+  <section class="slide" id="slide-2" style="align-items:flex-start;justify-content:center;padding:0;">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2560&auto=format&fit=crop"
+           alt="" aria-hidden="true" />
+    </div>
+    <div class="trends-inner">
+      <div class="trends-header">
+        <h2 class="trends-title anim d1">Trends<br />in Motion</h2>
+      </div>
+      <div class="trend-row"><span class="trend-num">01</span><span class="trend-name">Vibe coding</span></div>
+      <div class="trend-row"><span class="trend-num">02</span><span class="trend-name">Localized Agents</span></div>
+      <div class="trend-row"><span class="trend-num">03</span><span class="trend-name">Agent Skills</span></div>
+      <div class="trend-row"><span class="trend-num">04</span><span class="trend-name">Agentic automation</span></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 — NADELLA QUOTE -->
+  <section class="slide" id="slide-3">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2560&auto=format&fit=crop"
+           alt="" aria-hidden="true" />
+    </div>
+    <div class="quote-inner">
+      <span class="quote-mark anim d1">&ldquo;</span>
+      <p class="quote-text anim d2">AI agents will become the primary way we interact with computers in the future.</p>
+      <span class="quote-attr anim d3">Satya Nadella</span>
+    </div>
+  </section>
+
+  <!-- SLIDES 4–9 — PATH TO AUTONOMY (chat-to-claw slides 2–7) -->
+  <section class="slide" id="slide-4">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="evo-wrap">
+      <div class="evo-diagram-panel anim d4">
+        <img src="assets/01r.png" alt="Chatbots diagram — knows but doesn't do" />
+      </div>
+      <div class="evo-text-panel">
+        <p class="evo-period anim d1">2022 — Early 2023</p>
+        <h2 class="evo-heading anim d2">Chat<em>bots</em></h2>
+        <p class="evo-tagline anim d3">Knows but doesn't do</p>
+        <div class="evo-divider anim d3"></div>
+        <p class="evo-desc anim d4">The ChatGPT moment blew minds. Ask a question from a web browser, get an answer. But in a very short space of time, context windows ran out and you kind of ran out of things to do with it. Useful on the side, but limited.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-5">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1518655048521-f130df041f66?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="evo-wrap">
+      <div class="evo-diagram-panel anim d4">
+        <img src="assets/02r.png" alt="Tool Use diagram — can call tools and APIs" />
+      </div>
+      <div class="evo-text-panel">
+        <p class="evo-period anim d1">2023 — Early 2025</p>
+        <h2 class="evo-heading anim d2"><em>Reasoning</em></h2>
+        <p class="evo-tagline anim d3">Plans multi-step tasks</p>
+        <div class="evo-divider anim d3"></div>
+        <p class="evo-desc anim d4">Chain-of-thought prompting changed the game. Models began planning in multiple steps, and tools like LangChain agents emerged. Feeding context back into the system produced progressively better outcomes — each loop smarter than the last.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-6">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="evo-wrap">
+      <div class="evo-diagram-panel anim d4">
+        <img src="assets/03r.png" alt="Tool Use diagram — can call tools and APIs" />
+      </div>
+      <div class="evo-text-panel">
+        <p class="evo-period anim d1">Mid 2023 — 2024</p>
+        <h2 class="evo-heading anim d2">Tool <em>Use</em></h2>
+        <p class="evo-tagline anim d3">Can call tools and APIs</p>
+        <div class="evo-divider anim d3"></div>
+        <p class="evo-desc anim d4">The first big shift. Models gained access to the outside world — browsing the internet, connecting to APIs, Zapier, Wolfram Alpha. Remember when "book me a flight" was the killer demo? Not a great use case, but it proved capability.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-7">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="evo-wrap">
+      <div class="evo-diagram-panel anim d4">
+        <img src="assets/04r.png" alt="Operator diagram — browser-based actions on your behalf" />
+      </div>
+      <div class="evo-text-panel">
+        <p class="evo-period anim d1">2025</p>
+        <h2 class="evo-heading anim d2"><em>Operator</em></h2>
+        <p class="evo-tagline anim d3">Browser actions on your behalf</p>
+        <div class="evo-divider anim d3"></div>
+        <p class="evo-desc anim d4">ChatGPT got its own browser. Moving a mouse, clicking buttons, interpreting screenshots. It wasn't just answering — it was acting. Slow, yes. But the shift from responding to doing was profound. Not just knowing, but operating.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-8">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1557683311-eac922347aa1?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="evo-wrap">
+      <div class="evo-diagram-panel anim d4">
+        <img src="assets/05r.png" alt="Coworker diagram — works on your desktop" />
+      </div>
+      <div class="evo-text-panel">
+        <p class="evo-period anim d1">Late 2025 — Early 2026</p>
+        <h2 class="evo-heading anim d2">Co<em>worker</em></h2>
+        <p class="evo-tagline anim d3">Human still in the loop</p>
+        <div class="evo-divider anim d3"></div>
+        <p class="evo-desc anim d4">Claude Code. AI moved directly onto your device — manipulating files, using browsers, writing code in your workspace. The paradigm shift: AI coming closer to you. But every action still requires a human click. "I accept that this is what's happening."</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="slide-9">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="evo-wrap">
+      <div class="evo-diagram-panel anim d4">
+        <img src="assets/06r.png" alt="Autonomous diagram — acts on triggers across devices" />
+      </div>
+      <div class="evo-text-panel">
+        <p class="evo-period anim d1">2026</p>
+        <h2 class="evo-heading anim d2"><em>Autonomous</em></h2>
+        <p class="evo-tagline anim d3">Always on. Event-triggered.</p>
+        <div class="evo-divider anim d3"></div>
+        <p class="evo-desc anim d4">Dedicated hardware. Full permissions — emails, calendar, browser. People talk to agents via Telegram and WhatsApp while the agent works continuously in the background. Mac Minis sold out. It's always on, acting on triggers even when you're not asking.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 — INFLECTION POINT (intro-to-vibe-coding slide 7) -->
+  <section class="slide" id="slide-10">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="center-inner">
+      <div class="accent-line anim d1"></div>
+      <p class="statement anim d2">The <em>Inflection</em><br>Point</p>
+      <span class="attr anim d3">Dec 2025 &ndash; Feb 2026</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 — KARPATHY QUOTE (intro-to-vibe-coding slide 8) -->
+  <section class="slide" id="slide-11">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="quote-inner">
+      <span class="quote-mark anim d1">&ldquo;</span>
+      <p class="quote-text quote-text-long anim d2">
+        &hellip;programming is becoming unrecognizable. You're not typing computer code into an editor like the way things were since computers were invented, that era is over. You're spinning up AI agents, giving them tasks in English and managing and reviewing their work in parallel.
+      </p>
+      <span class="quote-attr anim d3">Feb 2026 · X post · Andrej Karpathy</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — WHAT IS VIBE CODING? (click reveal) -->
+  <section class="slide" id="slide-12">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="center-inner" style="width:100%;">
+      <span class="sec-label anim d1">Concept</span>
+      <h2 class="section-headline anim d2">What is <em>vibe coding?</em></h2>
+      <ul class="vibe-list">
+        <li class="vibe-item">
+          <span class="vibe-arrow">→</span>
+          <span class="vibe-text">Describe what you want in plain English.</span>
+        </li>
+        <li class="vibe-item">
+          <span class="vibe-arrow">→</span>
+          <span class="vibe-text">AI writes the code.</span>
+        </li>
+        <li class="vibe-item">
+          <span class="vibe-arrow">→</span>
+          <span class="vibe-text">You iterate on what you see.</span>
+        </li>
+      </ul>
+      <span class="flow-hint">describe<span>→</span>see result<span>→</span>describe again</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 13 — VIBE CODING EXAMPLES -->
+  <section class="slide examples-slide" id="slide-13">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="examples-inner">
+      <h2 class="examples-headline anim d1">Vibe Coding <em>examples</em></h2>
+      <div class="examples-body anim d2">
+        <div class="examples-columns">
+          <div class="examples-block">
+            <h3 class="examples-cat">Data &amp; Visualization</h3>
+            <ul class="examples-ul">
+              <li>Interactive charts &amp; graphs</li>
+              <li>Dashboards from data sources</li>
+            </ul>
+          </div>
+          <div class="examples-block">
+            <h3 class="examples-cat">Creative &amp; Media</h3>
+            <ul class="examples-ul">
+              <li>Animated SVG illustrations</li>
+              <li>Music visualizers</li>
+              <li>Digital zines or interactive stories</li>
+            </ul>
+          </div>
+          <div class="examples-block">
+            <h3 class="examples-cat">Documents &amp; reports</h3>
+            <ul class="examples-ul">
+              <li>Branded PDF or HTML reports</li>
+              <li>Auto-generated slide decks</li>
+              <li>Newsletters and email templates</li>
+            </ul>
+          </div>
+          <div class="examples-block">
+            <h3 class="examples-cat">Productivity &amp; Workflow</h3>
+            <ul class="examples-ul">
+              <li>Personal CRM or contact trackers</li>
+              <li>Habit or goal trackers</li>
+              <li>Meeting agenda generators</li>
+              <li>Markdown-based wikis or knowledge bases</li>
+            </ul>
+          </div>
+          <div class="examples-block">
+            <h3 class="examples-cat">Games &amp; Interactive experiences</h3>
+            <ul class="examples-ul">
+              <li>Simple browser games (trivia, word games, puzzle)</li>
+              <li>Interactive quizzes and assessments</li>
+              <li>Escape room-style logic puzzles</li>
+            </ul>
+          </div>
+          <div class="examples-block">
+            <h3 class="examples-cat">Prototypes &amp; Mockups</h3>
+            <ul class="examples-ul">
+              <li>Clickable UI prototypes</li>
+              <li>Design system component libraries</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14 — TOOLS & SKILLS -->
+  <section class="slide" id="slide-14">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2560&auto=format&fit=crop"
+           alt="" aria-hidden="true" />
+    </div>
+    <div class="quote-inner">
+      <span class="quote-mark anim d1">&ldquo;</span>
+      <p class="quote-text anim d2"><em>Tools</em> give agents access. <em>Skills</em> give agents capability.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 15 — AGENT SKILLS DEFINITION -->
+  <section class="slide" id="slide-15">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2560&auto=format&fit=crop"
+           alt="" aria-hidden="true" />
+    </div>
+    <div class="quote-inner">
+      <span class="quote-mark anim d1">&ldquo;</span>
+      <p class="quote-text quote-text-long anim d2"><em>Agent skills</em> are reusable actions, workflows, or tools available to an AI agent.</p>
+    </div>
+  </section>
+
+  <nav id="nav">
+    <button id="prev-btn" class="nav-btn" disabled aria-label="Previous slide">&#8592; Prev</button>
+    <span id="slide-counter">01 / 15</span>
+    <button id="next-btn" class="nav-btn" aria-label="Next slide">Next &#8594;</button>
+  </nav>
+  <p id="key-hint">&#8592; &#8594; keys</p>
+
+  <script>
+    const slides  = Array.from(document.querySelectorAll('.slide'));
+    const total   = slides.length;
+    let   current = 0;
+    let   animating = false;
+
+    const bar     = document.getElementById('progress-bar');
+    const counter = document.getElementById('slide-counter');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    const slide12El = document.getElementById('slide-12');
+    const slide12Idx = slide12El ? slides.indexOf(slide12El) : -1;
+    const slide12RevealEls = slide12El
+      ? [...slide12El.querySelectorAll('.vibe-item'), slide12El.querySelector('.flow-hint')].filter(Boolean)
+      : [];
+    let slide12Reveal = 0;
+
+    function resetSlide12Reveal() {
+      slide12Reveal = 0;
+      slide12RevealEls.forEach(el => el.classList.remove('revealed'));
+    }
+
+    function tryRevealSlide12() {
+      if (slide12Reveal >= slide12RevealEls.length) return false;
+      slide12RevealEls[slide12Reveal].classList.add('revealed');
+      slide12Reveal++;
+      return true;
+    }
+
+    function goForward() {
+      if (slide12Idx >= 0 && current === slide12Idx && slide12Reveal < slide12RevealEls.length) {
+        tryRevealSlide12();
+        return;
+      }
+      goTo(current + 1);
+    }
+
+    function goTo(index) {
+      if (animating || index === current || index < 0 || index >= total) return;
+      animating = true;
+
+      const from = slides[current];
+      const to   = slides[index];
+
+      from.classList.add('exit');
+      from.classList.remove('active');
+
+      to.classList.remove('exit');
+      void to.offsetWidth;
+      to.classList.add('active');
+
+      current = index;
+      if (to === slide12El) resetSlide12Reveal();
+      updateUI();
+
+      setTimeout(() => {
+        from.classList.remove('exit');
+        slides.forEach((slide, i) => {
+          if (i !== current) slide.classList.remove('active', 'exit');
+        });
+        animating = false;
+      }, 700);
+    }
+
+    function updateUI() {
+      counter.textContent = `${pad(current + 1)} / ${pad(total)}`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+      bar.style.width  = `${(current / (total - 1)) * 100}%`;
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goForward());
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault(); goForward();
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); goTo(current - 1);
+      }
+    });
+
+    document.addEventListener('click', e => {
+      if (e.target.closest('a, button, nav')) return;
+      const mid = window.innerWidth / 2;
+      if (e.clientX >= mid) goForward();
+      else goTo(current - 1);
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dx = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 50) {
+        if (dx > 0) goForward();
+        else goTo(current - 1);
+      }
+    }, { passive: true });
+
+    updateUI();
+  </script>
+</body>
+</html>
