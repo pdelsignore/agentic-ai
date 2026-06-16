@@ -249,19 +249,53 @@
     }
     .trend-row:hover .trend-name { color: var(--accent); }
 
-    #slide-2 .trend-row {
+    .trend-group {
+      border-bottom: 1px solid var(--line);
+    }
+    .trend-group .trend-row {
+      border-bottom: none;
+      padding-bottom: 0.6rem;
+    }
+    .trend-sub {
+      list-style: none;
+      padding: 0 0 1rem 4.5rem;
+      margin: 0;
+    }
+    .trend-sub-item {
+      font-family: var(--f-display);
+      font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+      font-weight: 300;
+      color: var(--muted);
+      padding: 0.4rem 0 0.4rem 1.2rem;
+      position: relative;
+      letter-spacing: -0.01em;
+      transition: color 0.3s ease;
+    }
+    .trend-sub-item::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      opacity: 0.5;
+    }
+    .trend-group:hover .trend-sub-item { color: var(--text); }
+
+    #slide-2 .trend-row,
+    #slide-2 .trend-sub-item {
       opacity: 0;
       transform: translateY(18px);
       transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
                   transform 0.75s cubic-bezier(0.16,1,0.3,1);
     }
     #slide-2.active .trends-inner > .trend-row:nth-child(2) { transition-delay: 0.35s; }
-    #slide-2.active .trends-inner > .trend-row:nth-child(3) { transition-delay: 0.55s; }
-    #slide-2.active .trends-inner > .trend-row:nth-child(4) { transition-delay: 0.75s; }
+    #slide-2.active .trend-group .trend-row { transition-delay: 0.45s; }
+    #slide-2.active .trend-sub-item:nth-child(1) { transition-delay: 0.55s; }
+    #slide-2.active .trend-sub-item:nth-child(2) { transition-delay: 0.65s; }
+    #slide-2.active .trend-sub-item:nth-child(3) { transition-delay: 0.75s; }
+    #slide-2.active .trends-inner > .trend-row:nth-child(4) { transition-delay: 0.85s; }
     #slide-2.active .trends-inner > .trend-row:nth-child(5) { transition-delay: 0.95s; }
-    #slide-2.active .trends-inner > .trend-row:nth-child(6) { transition-delay: 1.15s; }
-    #slide-2.active .trends-inner > .trend-row:nth-child(7) { transition-delay: 1.35s; }
-    #slide-2.active .trend-row {
+    #slide-2.active .trend-row,
+    #slide-2.active .trend-sub-item {
       opacity: 1;
       transform: translateY(0);
     }
@@ -438,6 +472,16 @@
       color: var(--muted); margin-top: 1.8rem;
       display: block;
     }
+    .statement-sub {
+      font-family: var(--f-body);
+      font-size: clamp(0.72rem, 1.1vw, 0.88rem);
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 1.4rem;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      max-width: 36rem;
+    }
 
     /* Vibe coding examples */
     .examples-slide {
@@ -535,15 +579,15 @@
     }
     .flow-hint span { opacity: 0.35; margin: 0 0.6rem; }
 
-    #slide-11 .vibe-item,
-    #slide-11 .flow-hint {
+    #slide-14 .vibe-item,
+    #slide-14 .flow-hint {
       opacity: 0;
       transform: translateY(18px);
       transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
                   transform 0.75s cubic-bezier(0.16,1,0.3,1);
     }
-    #slide-11 .vibe-item.revealed,
-    #slide-11 .flow-hint.revealed {
+    #slide-14 .vibe-item.revealed,
+    #slide-14 .flow-hint.revealed {
       opacity: 1;
       transform: translateY(0);
     }
@@ -710,6 +754,12 @@
       align-items: start;
     }
     @media (max-width: 768px) { .lr-body { grid-template-columns: 1fr; } }
+    #slide-21 .lr-body {
+      grid-template-columns: 1fr 1fr 2.2fr;
+    }
+    @media (max-width: 960px) {
+      #slide-21 .lr-body { grid-template-columns: 1fr; }
+    }
     .lr-section-label {
       font-size: 0.72rem; font-weight: 500;
       letter-spacing: 0.22em; text-transform: uppercase;
@@ -911,11 +961,16 @@
         <h2 class="trends-title anim d1">Agenda</h2>
       </div>
       <div class="trend-row"><span class="trend-num">01</span><span class="trend-name">The moment we are in</span></div>
-      <div class="trend-row"><span class="trend-num">02</span><span class="trend-name">Localized Agents</span></div>
-      <div class="trend-row"><span class="trend-num">03</span><span class="trend-name">Vibe coding</span></div>
-      <div class="trend-row"><span class="trend-num">04</span><span class="trend-name">Agent Skills</span></div>
-      <div class="trend-row"><span class="trend-num">05</span><span class="trend-name">AI Playbook</span></div>
-      <div class="trend-row"><span class="trend-num">06</span><span class="trend-name">3 bucket challenge</span></div>
+      <div class="trend-group">
+        <div class="trend-row"><span class="trend-num">02</span><span class="trend-name">Top AI Trends</span></div>
+        <ul class="trend-sub">
+          <li class="trend-sub-item">Coding Agents</li>
+          <li class="trend-sub-item">Vibe coding</li>
+          <li class="trend-sub-item">Agent Skills</li>
+        </ul>
+      </div>
+      <div class="trend-row"><span class="trend-num">03</span><span class="trend-name">AI Playbook</span></div>
+      <div class="trend-row"><span class="trend-num">04</span><span class="trend-name">3 bucket challenge</span></div>
     </div>
   </section>
 
@@ -1028,58 +1083,20 @@
     </div>
   </section>
 
-  <!-- SLIDE 9 — LOCALIZED AGENTS -->
+  <!-- SLIDE 9 — CODING AGENTS -->
   <section class="slide" id="slide-9">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
     <div class="center-inner">
       <div class="accent-line anim d1"></div>
-      <p class="statement anim d2">Localized <em>Agents</em></p>
+      <p class="statement anim d2">Coding <em>Agents</em></p>
+      <p class="statement-sub anim d3">Claude Code/Cowork &bull; OpenAI Codex &bull; Copilot Cowork</p>
     </div>
   </section>
 
-  <!-- SLIDE 10 — NADELLA QUOTE -->
+  <!-- SLIDE 10 — INFLECTION POINT -->
   <section class="slide" id="slide-10">
-    <div class="slide-bg">
-      <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2560&auto=format&fit=crop"
-           alt="" aria-hidden="true" />
-    </div>
-    <div class="quote-inner">
-      <span class="quote-mark anim d1">&ldquo;</span>
-      <p class="quote-text anim d2">AI agents will become the primary way we interact with computers in the future.</p>
-      <span class="quote-attr anim d3">Satya Nadella</span>
-    </div>
-  </section>
-
-  <!-- SLIDE 11 — WHAT IS VIBE CODING? (click reveal) -->
-  <section class="slide" id="slide-11">
-    <div class="slide-bg">
-      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
-    </div>
-    <div class="center-inner" style="width:100%;">
-      <span class="sec-label anim d1">Concept</span>
-      <h2 class="section-headline anim d2">What is <em>vibe coding?</em></h2>
-      <ul class="vibe-list">
-        <li class="vibe-item">
-          <span class="vibe-arrow">→</span>
-          <span class="vibe-text">Describe what you want in plain English.</span>
-        </li>
-        <li class="vibe-item">
-          <span class="vibe-arrow">→</span>
-          <span class="vibe-text">AI writes the code.</span>
-        </li>
-        <li class="vibe-item">
-          <span class="vibe-arrow">→</span>
-          <span class="vibe-text">You iterate on what you see.</span>
-        </li>
-      </ul>
-      <span class="flow-hint">describe<span>→</span>see result<span>→</span>describe again</span>
-    </div>
-  </section>
-
-  <!-- SLIDE 12 — INFLECTION POINT -->
-  <section class="slide" id="slide-12">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1090,8 +1107,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 13 — KARPATHY QUOTE -->
-  <section class="slide" id="slide-13">
+  <!-- SLIDE 11 — KARPATHY QUOTE -->
+  <section class="slide" id="slide-11">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1104,13 +1121,26 @@
     </div>
   </section>
 
-  <!-- SLIDE 14 — VIBE CODING EXAMPLES -->
-  <section class="slide examples-slide" id="slide-14">
+  <!-- SLIDE 12 — NADELLA QUOTE -->
+  <section class="slide" id="slide-12">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2560&auto=format&fit=crop"
+           alt="" aria-hidden="true" />
+    </div>
+    <div class="quote-inner">
+      <span class="quote-mark anim d1">&ldquo;</span>
+      <p class="quote-text anim d2">AI agents will become the primary way we interact with computers in the future.</p>
+      <span class="quote-attr anim d3">Satya Nadella</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 13 — THE RISE OF VIBE CODING -->
+  <section class="slide examples-slide" id="slide-13">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
     <div class="examples-inner">
-      <h2 class="examples-headline anim d1">Vibe Coding <em>examples</em></h2>
+      <h2 class="examples-headline anim d1">The Rise Of <em>Vibe Coding</em></h2>
       <div class="examples-body anim d2">
         <div class="examples-columns">
           <div class="examples-block">
@@ -1162,6 +1192,32 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14 — WHAT IS VIBE CODING? (click reveal) -->
+  <section class="slide" id="slide-14">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="center-inner" style="width:100%;">
+      <span class="sec-label anim d1">Concept</span>
+      <h2 class="section-headline anim d2">What is <em>vibe coding?</em></h2>
+      <ul class="vibe-list">
+        <li class="vibe-item">
+          <span class="vibe-arrow">→</span>
+          <span class="vibe-text">Describe what you want in plain English.</span>
+        </li>
+        <li class="vibe-item">
+          <span class="vibe-arrow">→</span>
+          <span class="vibe-text">AI writes the code.</span>
+        </li>
+        <li class="vibe-item">
+          <span class="vibe-arrow">→</span>
+          <span class="vibe-text">You iterate on what you see.</span>
+        </li>
+      </ul>
+      <span class="flow-hint">describe<span>→</span>see result<span>→</span>describe again</span>
     </div>
   </section>
 
@@ -1262,12 +1318,16 @@
             <a class="tool-name" href="https://x.com" target="_blank" rel="noopener">X.com</a>
             <span class="tool-desc">Best AI newsfeed</span>
           </li>
-          <li><span class="tool-subcat">Organize &amp; Curate</span></li>
           <li class="tool-item anim d6">
+            <a class="tool-name" href="https://pearsonlearning.degreed.app/dgusermv4nrm3/home/overview" target="_blank" rel="noopener">Learning Hub</a>
+            <span class="tool-desc">Pearson Degreed</span>
+          </li>
+          <li><span class="tool-subcat">Organize &amp; Curate</span></li>
+          <li class="tool-item anim d7">
             <a class="tool-name" href="https://mymind.com" target="_blank" rel="noopener">MyMind</a>
             <span class="tool-desc">Bookmarking &amp; Capturing</span>
           </li>
-          <li class="tool-item anim d7">
+          <li class="tool-item anim d8">
             <a class="tool-name" href="https://notebooklm.google.com" target="_blank" rel="noopener">NotebookLM</a>
             <span class="tool-desc">Learning System</span>
           </li>
@@ -1287,12 +1347,18 @@
       </div>
       <div class="lr-body">
         <div class="anim d3">
+          <span class="lr-section-label">The Hub Generative AI page</span>
+          <div class="channel-grid" style="grid-template-columns:1fr;">
+            <a class="channel-link" href="https://pearsonlearning.degreed.app/dgusermv4nrm3/home/overview" target="_blank" rel="noopener">Generative AI Upskilling</a>
+          </div>
+        </div>
+        <div class="anim d4">
           <span class="lr-section-label">X.com</span>
           <div class="channel-grid" style="grid-template-columns:1fr;">
             <a class="channel-link" href="https://x.com/i/lists/1697976264148111633" target="_blank" rel="noopener">AI Tech Watchlist</a>
           </div>
         </div>
-        <div class="anim d4">
+        <div class="anim d5">
           <span class="lr-section-label">YouTube Channels</span>
           <div class="channel-grid">
             <a class="channel-link" href="https://www.youtube.com/@aiadvantage" target="_blank" rel="noopener">AI Advantage (The)</a>
@@ -1334,10 +1400,10 @@
           <span class="lr-section-label">My AI Toolkit</span>
           <div class="toolkit-grid" style="gap:0 4vw;">
             <div class="toolkit-item"><span>Claude Code</span><span class="toolkit-item-desc">for everything</span></div>
-            <div class="toolkit-item"><span>Gemini Flash &amp; Pro</span><span class="toolkit-item-desc">visualizations</span></div>
+            <div class="toolkit-item"><span>Gemini &amp; GPT 2 image</span><span class="toolkit-item-desc">images</span></div>
             <div class="toolkit-item"><span>Cursor</span><span class="toolkit-item-desc">IDE &amp; vibe coding</span></div>
             <div class="toolkit-item"><span>Gemini Veo 3</span><span class="toolkit-item-desc">video</span></div>
-            <div class="toolkit-item"><span>Claude Opus 4.6</span><span class="toolkit-item-desc">model preference</span></div>
+            <div class="toolkit-item"><span>Claude Opus</span><span class="toolkit-item-desc">model preference</span></div>
             <div class="toolkit-item"><span>HeyGen</span><span class="toolkit-item-desc">avatars &amp; video</span></div>
             <div class="toolkit-item"><span>NotebookLM</span><span class="toolkit-item-desc">research &amp; learning</span></div>
             <div class="toolkit-item"><span>Sudo &amp; Moises</span><span class="toolkit-item-desc">music exploration</span></div>
@@ -1497,28 +1563,28 @@
 
     function pad(n) { return String(n).padStart(2, '0'); }
 
-    const slide11El = document.getElementById('slide-11');
-    const slide11Idx = slide11El ? slides.indexOf(slide11El) : -1;
-    const slide11RevealEls = slide11El
-      ? [...slide11El.querySelectorAll('.vibe-item'), slide11El.querySelector('.flow-hint')].filter(Boolean)
+    const slide14El = document.getElementById('slide-14');
+    const slide14Idx = slide14El ? slides.indexOf(slide14El) : -1;
+    const slide14RevealEls = slide14El
+      ? [...slide14El.querySelectorAll('.vibe-item'), slide14El.querySelector('.flow-hint')].filter(Boolean)
       : [];
-    let slide11Reveal = 0;
+    let slide14Reveal = 0;
 
-    function resetSlide11Reveal() {
-      slide11Reveal = 0;
-      slide11RevealEls.forEach(el => el.classList.remove('revealed'));
+    function resetSlide14Reveal() {
+      slide14Reveal = 0;
+      slide14RevealEls.forEach(el => el.classList.remove('revealed'));
     }
 
-    function tryRevealSlide11() {
-      if (slide11Reveal >= slide11RevealEls.length) return false;
-      slide11RevealEls[slide11Reveal].classList.add('revealed');
-      slide11Reveal++;
+    function tryRevealSlide14() {
+      if (slide14Reveal >= slide14RevealEls.length) return false;
+      slide14RevealEls[slide14Reveal].classList.add('revealed');
+      slide14Reveal++;
       return true;
     }
 
     function goForward() {
-      if (slide11Idx >= 0 && current === slide11Idx && slide11Reveal < slide11RevealEls.length) {
-        tryRevealSlide11();
+      if (slide14Idx >= 0 && current === slide14Idx && slide14Reveal < slide14RevealEls.length) {
+        tryRevealSlide14();
         return;
       }
       goTo(current + 1);
@@ -1539,7 +1605,7 @@
       to.classList.add('active');
 
       current = index;
-      if (to === slide11El) resetSlide11Reveal();
+      if (to === slide14El) resetSlide14Reveal();
       updateUI();
 
       setTimeout(() => {
