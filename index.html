@@ -483,6 +483,45 @@
       max-width: 36rem;
     }
 
+    /* Diagram slide */
+    .diagram-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 5vmin 5vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
+      text-align: center;
+      gap: 1.75rem;
+    }
+    .diagram-headline {
+      font-family: var(--f-display);
+      font-size: clamp(1.75rem, 3vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .diagram-headline em { font-style: italic; color: var(--accent); font-weight: 400; }
+    .diagram-frame {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+    .diagram-frame img {
+      width: auto;
+      height: auto;
+      max-width: min(78vw, 960px);
+      max-height: min(68vh, 680px);
+      object-fit: contain;
+      display: block;
+    }
+
     /* Vibe coding examples */
     .examples-slide {
       overflow-y: auto;
@@ -543,6 +582,35 @@
       color: var(--accent);
       opacity: 0.55;
       font-size: 0.85em;
+    }
+
+    #slide-13.examples-slide {
+      align-items: center;
+      justify-content: center;
+      padding: 4vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    #slide-13 .slide-bg img {
+      opacity: 0.12;
+    }
+    #slide-13 .examples-inner {
+      margin: 0 auto;
+    }
+    #slide-13 .examples-headline {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    #slide-13 .examples-columns {
+      text-align: center;
+    }
+    #slide-13 .examples-cat {
+      text-align: center;
+    }
+    #slide-13 .examples-ul li {
+      padding-left: 0;
+    }
+    #slide-13 .examples-ul li::before {
+      position: static;
+      margin-right: 0.35rem;
     }
 
     /* What is vibe coding — click reveal */
@@ -657,6 +725,95 @@
       font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.08em;
+    }
+
+    #slide-19 {
+      align-items: center;
+      justify-content: center;
+      padding: 6vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    #slide-19 .playbook-inner {
+      text-align: center;
+      margin: 0 auto;
+    }
+    #slide-19 .lead-row {
+      justify-content: center;
+      text-align: center;
+    }
+    #slide-19 .lead-word {
+      min-width: auto;
+    }
+
+    #slide-20,
+    #slide-21.examples-slide,
+    #slide-22 {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    #slide-20 .pillar {
+      margin: 0 auto;
+      padding: 4vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
+      text-align: center;
+    }
+    #slide-20 .pillar-left {
+      text-align: center;
+    }
+    #slide-20 .pillar-heading {
+      color: var(--accent);
+    }
+    #slide-20 .pillar-desc {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #slide-20 .pillar-number {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    #slide-20 .pillar-right,
+    #slide-20 .tool-list,
+    #slide-20 .tool-item {
+      text-align: left;
+    }
+    #slide-20 .tool-subcat {
+      text-align: left;
+      border-top: none;
+    }
+    #slide-20 .tool-item {
+      justify-content: space-between;
+    }
+    #slide-21.examples-slide,
+    #slide-22 {
+      padding: 4vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    #slide-21 .playbook-content,
+    #slide-22 .playbook-content {
+      margin: 0 auto;
+      text-align: center;
+      padding: 0;
+    }
+    #slide-21 .lr-header,
+    #slide-22 .lr-header {
+      text-align: center;
+    }
+    #slide-21 .lr-body,
+    #slide-22 .lr-body {
+      justify-items: center;
+      text-align: center;
+    }
+    #slide-21 .channel-grid,
+    #slide-22 .toolkit-grid {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    #slide-22 .toolkit-item {
+      gap: 3rem;
+      padding-right: 1.5rem;
+    }
+    #slide-22 .lr-body > div p {
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .pillar {
@@ -928,6 +1085,9 @@
       color: var(--text);
       font-style: italic;
     }
+    .closing-quote em {
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -974,7 +1134,7 @@
     </div>
   </section>
 
-  <!-- SLIDES 3–8 — PATH TO AUTONOMY (chat-to-claw slides 2–7) -->
+  <!-- SLIDES 3–7 — PATH TO AUTONOMY (chat-to-claw slides 2–6) -->
   <section class="slide" id="slide-3">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
@@ -1031,24 +1191,6 @@
 
   <section class="slide" id="slide-6">
     <div class="slide-bg">
-      <img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
-    </div>
-    <div class="evo-wrap">
-      <div class="evo-diagram-panel anim d4">
-        <img src="assets/04r.png" alt="Operator diagram — browser-based actions on your behalf" />
-      </div>
-      <div class="evo-text-panel">
-        <p class="evo-period anim d1">2025</p>
-        <h2 class="evo-heading anim d2"><em>Operator</em></h2>
-        <p class="evo-tagline anim d3">Browser actions on your behalf</p>
-        <div class="evo-divider anim d3"></div>
-        <p class="evo-desc anim d4">ChatGPT got its own browser. Moving a mouse, clicking buttons, interpreting screenshots. It wasn't just answering — it was acting. Slow, yes. But the shift from responding to doing was profound. Not just knowing, but operating.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="slide" id="slide-7">
-    <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1557683311-eac922347aa1?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
     <div class="evo-wrap">
@@ -1065,7 +1207,7 @@
     </div>
   </section>
 
-  <section class="slide" id="slide-8">
+  <section class="slide" id="slide-7">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1083,8 +1225,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 9 — CODING AGENTS -->
-  <section class="slide" id="slide-9">
+  <!-- SLIDE 8 — CODING AGENTS -->
+  <section class="slide" id="slide-8">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1095,8 +1237,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 10 — INFLECTION POINT -->
-  <section class="slide" id="slide-10">
+  <!-- SLIDE 9 — INFLECTION POINT -->
+  <section class="slide" id="slide-9">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1107,8 +1249,8 @@
     </div>
   </section>
 
-  <!-- SLIDE 11 — KARPATHY QUOTE -->
-  <section class="slide" id="slide-11">
+  <!-- SLIDE 10 — KARPATHY QUOTE -->
+  <section class="slide" id="slide-10">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1121,23 +1263,36 @@
     </div>
   </section>
 
-  <!-- SLIDE 12 — NADELLA QUOTE -->
-  <section class="slide" id="slide-12">
+  <!-- SLIDE 11 — AGENT HARNESS -->
+  <section class="slide" id="slide-11">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2560&auto=format&fit=crop"
            alt="" aria-hidden="true" />
     </div>
-    <div class="quote-inner">
-      <span class="quote-mark anim d1">&ldquo;</span>
-      <p class="quote-text anim d2">AI agents will become the primary way we interact with computers in the future.</p>
-      <span class="quote-attr anim d3">Satya Nadella</span>
+    <div class="diagram-inner">
+      <h2 class="diagram-headline anim d1">Agent <em>Harness</em></h2>
+      <div class="diagram-frame anim d2">
+        <img src="assets/agent-harness.png" alt="Agent Harness diagram — model intelligence at the center, surrounded by tools, memory, context engineering, sandbox, orchestration, and serving layer" />
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 — VIBE CODING -->
+  <section class="slide" id="slide-12">
+    <div class="slide-bg">
+      <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+    </div>
+    <div class="center-inner">
+      <div class="accent-line anim d1"></div>
+      <p class="statement anim d2">Vibe <em>Coding</em></p>
+      <p class="statement-sub anim d3">Cursor &bull; Claude Cowork &bull; Figma Make</p>
     </div>
   </section>
 
   <!-- SLIDE 13 — THE RISE OF VIBE CODING -->
   <section class="slide examples-slide" id="slide-13">
     <div class="slide-bg">
-      <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
+      <img src="https://images.unsplash.com/photo-1498050108023?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
     <div class="examples-inner">
       <h2 class="examples-headline anim d1">The Rise Of <em>Vibe Coding</em></h2>
@@ -1268,7 +1423,7 @@
   </section>
 
   <!-- SLIDE 19 — LEAD FRAMEWORK -->
-  <section class="slide" id="slide-19" style="align-items:flex-start;justify-content:center;padding:6vmin 8vw;">
+  <section class="slide" id="slide-19">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1297,7 +1452,7 @@
   </section>
 
   <!-- SLIDE 20 — LEARN -->
-  <section class="slide" id="slide-20" style="align-items:flex-start;text-align:left;">
+  <section class="slide" id="slide-20">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1322,12 +1477,15 @@
             <a class="tool-name" href="https://pearsonlearning.degreed.app/dgusermv4nrm3/home/overview" target="_blank" rel="noopener">Learning Hub</a>
             <span class="tool-desc">Pearson Degreed</span>
           </li>
-          <li><span class="tool-subcat">Organize &amp; Curate</span></li>
           <li class="tool-item anim d7">
+            <span class="tool-name">Newsletters</span>
+          </li>
+          <li><span class="tool-subcat">Organize &amp; Curate</span></li>
+          <li class="tool-item anim d8">
             <a class="tool-name" href="https://mymind.com" target="_blank" rel="noopener">MyMind</a>
             <span class="tool-desc">Bookmarking &amp; Capturing</span>
           </li>
-          <li class="tool-item anim d8">
+          <li class="tool-item anim d9">
             <a class="tool-name" href="https://notebooklm.google.com" target="_blank" rel="noopener">NotebookLM</a>
             <span class="tool-desc">Learning System</span>
           </li>
@@ -1337,13 +1495,13 @@
   </section>
 
   <!-- SLIDE 21 — LEARNING RESOURCES -->
-  <section class="slide examples-slide" id="slide-21" style="align-items:flex-start;text-align:left;">
+  <section class="slide examples-slide" id="slide-21">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
     <div class="playbook-content zoom">
       <div class="lr-header">
-        <h2 class="lr-title anim d2">Learning Resources</h2>
+        <h2 class="lr-title anim d2">Learning <em>Resources</em></h2>
       </div>
       <div class="lr-body">
         <div class="anim d3">
@@ -1371,7 +1529,6 @@
             <a class="channel-link" href="https://www.youtube.com/@CollaborationSimplified" target="_blank" rel="noopener">Collaboration Simplified</a>
             <a class="channel-link" href="https://www.youtube.com/c/DwarkeshPatel" target="_blank" rel="noopener">Dwarkesh Podcast</a>
             <a class="channel-link" href="https://www.youtube.com/@dylandavisAI" target="_blank" rel="noopener">Dylan Davis</a>
-            <a class="channel-link" href="https://www.youtube.com/@EverydayAI" target="_blank" rel="noopener">Everyday AI</a>
             <a class="channel-link" href="https://www.youtube.com/@futurepedia_io" target="_blank" rel="noopener">Futurepedia</a>
             <a class="channel-link" href="https://www.youtube.com/@googledeepmind" target="_blank" rel="noopener">Google DeepMind</a>
             <a class="channel-link" href="https://www.youtube.com/@MATGpod" target="_blank" rel="noopener">Marketing Against the Grain</a>
@@ -1383,7 +1540,7 @@
   </section>
 
   <!-- SLIDE 22 — EXPERIMENT & APPLY -->
-  <section class="slide" id="slide-22" style="align-items:flex-start;text-align:left;">
+  <section class="slide" id="slide-22">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1399,16 +1556,16 @@
         <div class="anim d3">
           <span class="lr-section-label">My AI Toolkit</span>
           <div class="toolkit-grid" style="gap:0 4vw;">
-            <div class="toolkit-item"><span>Claude Code</span><span class="toolkit-item-desc">for everything</span></div>
-            <div class="toolkit-item"><span>Gemini &amp; GPT 2 image</span><span class="toolkit-item-desc">images</span></div>
-            <div class="toolkit-item"><span>Cursor</span><span class="toolkit-item-desc">IDE &amp; vibe coding</span></div>
+            <div class="toolkit-item"><span>Cursor</span><span class="toolkit-item-desc">coworker</span></div>
+            <div class="toolkit-item"><span>Claude Cowork</span><span class="toolkit-item-desc">coworker</span></div>
+            <div class="toolkit-item"><span>Claude Opus</span><span class="toolkit-item-desc">Model preference</span></div>
+            <div class="toolkit-item"><span>NotebookLM</span><span class="toolkit-item-desc">Research &amp; Learning</span></div>
+            <div class="toolkit-item"><span>MyMind</span><span class="toolkit-item-desc">Bookmarking</span></div>
+            <div class="toolkit-item"><span>Gemini &amp; GPT2 images</span><span class="toolkit-item-desc">visual content</span></div>
             <div class="toolkit-item"><span>Gemini Veo 3</span><span class="toolkit-item-desc">video</span></div>
-            <div class="toolkit-item"><span>Claude Opus</span><span class="toolkit-item-desc">model preference</span></div>
-            <div class="toolkit-item"><span>HeyGen</span><span class="toolkit-item-desc">avatars &amp; video</span></div>
-            <div class="toolkit-item"><span>NotebookLM</span><span class="toolkit-item-desc">research &amp; learning</span></div>
-            <div class="toolkit-item"><span>Sudo &amp; Moises</span><span class="toolkit-item-desc">music exploration</span></div>
-            <div class="toolkit-item"><span>MyMind</span><span class="toolkit-item-desc">curating content</span></div>
-            <div class="toolkit-item"><span>GPT 5</span><span class="toolkit-item-desc">voice mode · mobile</span></div>
+            <div class="toolkit-item"><span>HeyGen</span><span class="toolkit-item-desc">Avatars &amp; video</span></div>
+            <div class="toolkit-item"><span>Sudo &amp; Moises</span><span class="toolkit-item-desc">Music</span></div>
+            <div class="toolkit-item"><span>GPT5, Copilot app</span><span class="toolkit-item-desc">voice mode, mobile</span></div>
           </div>
         </div>
       </div>
@@ -1537,7 +1694,7 @@
     <div class="quote-inner">
       <div class="accent-line anim d1"></div>
       <blockquote class="closing-quote anim d2">
-        "In the Age of AI, intelligence is cheap. Judgement, Taste and Lived Experience is what matters."
+        "In the Age of AI, <em>intelligence</em> is cheap. <em>Judgement</em>, <em>Taste</em> and <em>Lived Experience</em> is what matters."
       </blockquote>
       <div class="accent-line anim d3" style="margin-top:2.5rem;margin-bottom:0;"></div>
     </div>
