@@ -731,95 +731,6 @@
       letter-spacing: 0.08em;
     }
 
-    #slide-23 {
-      align-items: center;
-      justify-content: center;
-      padding: 6vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
-    }
-    #slide-23 .playbook-inner {
-      text-align: center;
-      margin: 0 auto;
-    }
-    #slide-23 .lead-row {
-      justify-content: center;
-      text-align: center;
-    }
-    #slide-23 .lead-word {
-      min-width: auto;
-    }
-
-    #slide-24,
-    #slide-25.examples-slide,
-    #slide-26 {
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    #slide-24 .pillar {
-      margin: 0 auto;
-      padding: 4vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
-      text-align: center;
-    }
-    #slide-24 .pillar-left {
-      text-align: center;
-    }
-    #slide-24 .pillar-heading {
-      color: var(--accent);
-    }
-    #slide-24 .pillar-desc {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    #slide-24 .pillar-number {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    #slide-24 .pillar-right,
-    #slide-24 .tool-list,
-    #slide-24 .tool-item {
-      text-align: left;
-    }
-    #slide-24 .tool-subcat {
-      text-align: left;
-      border-top: none;
-    }
-    #slide-24 .tool-item {
-      justify-content: space-between;
-    }
-    #slide-25.examples-slide,
-    #slide-26 {
-      padding: 4vmin 8vw calc(5.5rem + env(safe-area-inset-bottom, 0px));
-    }
-    #slide-25 .playbook-content,
-    #slide-26 .playbook-content {
-      margin: 0 auto;
-      text-align: center;
-      padding: 0;
-    }
-    #slide-25 .lr-header,
-    #slide-26 .lr-header {
-      text-align: center;
-    }
-    #slide-25 .lr-body,
-    #slide-26 .lr-body {
-      justify-items: center;
-      text-align: center;
-    }
-    #slide-25 .channel-grid,
-    #slide-26 .toolkit-grid {
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
-    }
-    #slide-26 .toolkit-item {
-      gap: 3rem;
-      padding-right: 1.5rem;
-    }
-    #slide-26 .lr-body > div p {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
     .pillar {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -915,11 +826,11 @@
       align-items: start;
     }
     @media (max-width: 768px) { .lr-body { grid-template-columns: 1fr; } }
-    #slide-25 .lr-body {
-      grid-template-columns: 1fr 1fr 2.2fr;
+    #slide-23 .lr-body {
+      grid-template-columns: 1fr 2.2fr 1fr;
     }
     @media (max-width: 960px) {
-      #slide-25 .lr-body { grid-template-columns: 1fr; }
+      #slide-23 .lr-body { grid-template-columns: 1fr; }
     }
     .lr-section-label {
       font-size: 0.72rem; font-weight: 500;
@@ -944,6 +855,14 @@
     }
     .channel-link:hover { color: var(--accent); }
     .channel-link::before { content: '↗'; font-size: 0.6rem; color: var(--accent); opacity: 0.5; flex-shrink: 0; }
+    .channel-item {
+      display: flex; align-items: baseline;
+      padding: 0.42rem 0.5rem 0.42rem 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--f-display);
+      font-size: clamp(0.78rem, 1.1vw, 0.92rem); font-weight: 400;
+    }
 
     .toolkit-grid {
       display: grid;
@@ -1480,7 +1399,7 @@
   </section>
 
   <!-- SLIDE 22 — LEARN -->
-  <section class="slide" id="slide-22">
+  <section class="slide" id="slide-22" style="align-items:flex-start;text-align:left;">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
@@ -1523,28 +1442,22 @@
   </section>
 
   <!-- SLIDE 23 — LEARNING RESOURCES -->
-  <section class="slide examples-slide" id="slide-23">
+  <section class="slide examples-slide" id="slide-23" style="align-items:flex-start;text-align:left;">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
     <div class="playbook-content zoom">
       <div class="lr-header">
-        <h2 class="lr-title anim d2">Learning <em>Resources</em></h2>
+        <h2 class="lr-title anim d2">Learning Resources</h2>
       </div>
       <div class="lr-body">
         <div class="anim d3">
-          <span class="lr-section-label">The Hub Generative AI page</span>
-          <div class="channel-grid" style="grid-template-columns:1fr;">
-            <a class="channel-link" href="https://pearsonlearning.degreed.app/dgusermv4nrm3/home/overview" target="_blank" rel="noopener">Generative AI Upskilling</a>
-          </div>
-        </div>
-        <div class="anim d4">
           <span class="lr-section-label">X.com</span>
           <div class="channel-grid" style="grid-template-columns:1fr;">
             <a class="channel-link" href="https://x.com/i/lists/1697976264148111633" target="_blank" rel="noopener">AI Tech Watchlist</a>
           </div>
         </div>
-        <div class="anim d5">
+        <div class="anim d4">
           <span class="lr-section-label">YouTube Channels</span>
           <div class="channel-grid">
             <a class="channel-link" href="https://www.youtube.com/@aiadvantage" target="_blank" rel="noopener">AI Advantage (The)</a>
@@ -1557,10 +1470,24 @@
             <a class="channel-link" href="https://www.youtube.com/@CollaborationSimplified" target="_blank" rel="noopener">Collaboration Simplified</a>
             <a class="channel-link" href="https://www.youtube.com/c/DwarkeshPatel" target="_blank" rel="noopener">Dwarkesh Podcast</a>
             <a class="channel-link" href="https://www.youtube.com/@dylandavisAI" target="_blank" rel="noopener">Dylan Davis</a>
+            <a class="channel-link" href="https://www.youtube.com/@EverydayAI" target="_blank" rel="noopener">Everyday AI</a>
             <a class="channel-link" href="https://www.youtube.com/@futurepedia_io" target="_blank" rel="noopener">Futurepedia</a>
             <a class="channel-link" href="https://www.youtube.com/@googledeepmind" target="_blank" rel="noopener">Google DeepMind</a>
             <a class="channel-link" href="https://www.youtube.com/@MATGpod" target="_blank" rel="noopener">Marketing Against the Grain</a>
             <a class="channel-link" href="https://www.youtube.com/@mreflow" target="_blank" rel="noopener">Matt Wolfe</a>
+          </div>
+        </div>
+        <div class="anim d5">
+          <span class="lr-section-label">Podcasts</span>
+          <div class="channel-grid" style="grid-template-columns:1fr;">
+            <span class="channel-item">Lenny's Podcast</span>
+            <span class="channel-item">Cognitive Revolution</span>
+            <span class="channel-item">No Priors</span>
+            <span class="channel-item">Latent Space</span>
+            <span class="channel-item">Mixture of Experts</span>
+            <span class="channel-item">Hard fork</span>
+            <span class="channel-item">The Artificial Intelligence Show</span>
+            <span class="channel-item">Big Technology Podcast</span>
           </div>
         </div>
       </div>
@@ -1568,7 +1495,7 @@
   </section>
 
   <!-- SLIDE 24 — EXPERIMENT & APPLY -->
-  <section class="slide" id="slide-24">
+  <section class="slide" id="slide-24" style="align-items:flex-start;text-align:left;">
     <div class="slide-bg">
       <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2560&auto=format&fit=crop" alt="" aria-hidden="true" />
     </div>
